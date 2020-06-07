@@ -1,0 +1,2 @@
+#define ElectronicCheckbook_VERSION_MAJOR @ElectronicCheckbook_VERSION_MAJOR@
+#define ElectronicCheckbook_VERSION_MINOR @ElectronicCheckbook_VERSION_MINOR@
