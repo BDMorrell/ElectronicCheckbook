@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(ElectronicCheckbook_tests)
 
+add_subdirectory(testInputGenerators)
+
 # External tests (outside this directory)
 add_test(NAME Runs COMMAND electroniccheckbook)
 
