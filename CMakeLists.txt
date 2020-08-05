@@ -27,6 +27,12 @@ add_subdirectory(src)
 
 # Testing
 if(ElectronicCheckbook_BUILD_TESTING)
+  # Build googletest dependency
+  set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
+  set(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
+  add_subdirectory(deps/googletest)
+
+  #Test
   include(CTest)
   add_subdirectory(test)
 endif()
