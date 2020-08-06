@@ -18,12 +18,13 @@ endif()
 set(libBaseDir "${PROJECT_SOURCE_DIR}/lib" )
 set(libGeneratedDir "${PROJECT_BINARY_DIR}/lib")
 set(libDirs ${libBaseDir} ${libGeneratedDir})
+set(sourceDir "${PROJECT_SOURCE_DIR}/src")
 
 # Code generation
 configure_file("${libBaseDir}/version.h.in" "${libGeneratedDir}/version.h")
 
 # Source compiling
-add_subdirectory(src)
+add_subdirectory(${sourceDir})
 
 # Testing
 if(ElectronicCheckbook_BUILD_TESTING)

@@ -9,6 +9,7 @@ add_test(NAME Runs COMMAND electroniccheckbook)
 # GoogleTest tests:
 set(SOURCES_TEST
   test.cpp
+  csvParserTest.cpp
 )
 
 set(HEADERS_TEST
@@ -17,9 +18,9 @@ set(HEADERS_TEST
 
 add_executable(ec_tests ${SOURCES_TEST} ${HEADERS_TEST})
 
-target_include_directories(ec_tests PRIVATE ${libDirs})
+target_include_directories(ec_tests PRIVATE ${libDirs} ${sourceDir})
 
-target_link_libraries(ec_tests gtest_main)
+target_link_libraries(ec_tests gtest_main echeck_parser)
 
 add_test(NAME GeneralTests COMMAND ec_tests)
 
