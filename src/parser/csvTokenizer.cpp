@@ -42,11 +42,14 @@ string csvTokenizer::getEscapedField()
         input->get(); // advance input
         builder.push_back('\n');
       } else {
-        throw token_error("CR may not exist without and LF");
+        throw token_error("CR may not exist without a LF");
       }
     } else { // note: \x0a (LF) can pass right through. I'm assuming \x0a == \n
       builder.push_back((char) c);
     }
+  }
+  if (c == EOF) {
+    throw parser_error("unexpected EOF when parsing an escaped");
   }
   return builder;
 }
