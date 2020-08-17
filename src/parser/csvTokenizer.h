@@ -12,12 +12,12 @@ public:
   csvTokenizer(std::istream *input);
   ~csvTokenizer();
 
-  std::string getField();
+  std::string getField(); // may throw
 protected:
   std::istream *input;
   std::string getEscapedField();
   std::string getUnescapedField();
-  void unexpectedEOF();
+  [[noreturn]] void unexpectedEOF();
 };
 
 };
