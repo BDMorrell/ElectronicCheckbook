@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 3.14)
 project(ElectronicCheckbook_tests)
 
-add_subdirectory(testInput)
+# Build googletest dependency
+mark_as_advanced(
+  BUILD_GMOCK BUILD_GTEST INSTALL_GTEST
+  gmock_build_tests gtest_build_samples gtest_build_tests
+  gtest_disable_pthreads gtest_force_shared_crt gtest_hide_internal_symbols
+)
+set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
+set(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
+add_subdirectory("${externalDir}/googletest" "googletest")
 
-# External tests (outside this directory)
-add_test(NAME Runs COMMAND electroniccheckbook)
+include(GoogleTest)
 
-# GoogleTest tests:
 set(SOURCES_TEST
   test.cpp
   csvParserTest.cpp
@@ -16,11 +22,9 @@ set(HEADERS_TEST
   "${libGeneratedDir}/version.h"
 )
 
-add_executable(ec_tests ${SOURCES_TEST} ${HEADERS_TEST})
+add_executable(tests ${SOURCES_TEST} ${HEADERS_TEST})
+target_include_directories(tests PRIVATE ${libDirs} ${sourceDir})
+target_link_libraries(tests gtest_main echeck_parser)
 
-target_include_directories(ec_tests PRIVATE ${libDirs} ${sourceDir})
-
-target_link_libraries(ec_tests gtest_main echeck_parser)
-
-add_test(NAME GeneralTests COMMAND ec_tests)
+gtest_discover_tests(tests)
 

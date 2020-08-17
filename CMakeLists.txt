@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # Configuration
 if ((CMAKE_BUILD_TYPE Debug) OR (NOT CMAKE_BUILD_TYPE)) # if debug or not specified
   option(BUILD_TESTING "Should there be tests?" ON)
+else()
+  option(BUILD_TESTING "Should there be tests?" OFF)
 endif()
 
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME) AND BUILD_TESTING)
@@ -19,6 +21,7 @@ set(libBaseDir "${PROJECT_SOURCE_DIR}/lib" )
 set(libGeneratedDir "${PROJECT_BINARY_DIR}/lib")
 set(libDirs ${libBaseDir} ${libGeneratedDir})
 set(sourceDir "${PROJECT_SOURCE_DIR}/src")
+set(externalDir "${PROJECT_SOURCE_DIR}/deps")
 
 # Code generation
 configure_file("${libBaseDir}/version.h.in" "${libGeneratedDir}/version.h")
@@ -28,12 +31,6 @@ add_subdirectory(${sourceDir})
 
 # Testing
 if(ElectronicCheckbook_BUILD_TESTING)
-  # Build googletest dependency
-  set(BUILD_GMOCK OFF CACHE BOOL "Builds the googlemock subproject")
-  set(INSTALL_GTEST OFF CACHE BOOL "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)")
-  add_subdirectory(deps/googletest)
-
-  #Test
   include(CTest)
   add_subdirectory(test)
 endif()
