@@ -15,7 +15,7 @@ include(GoogleTest)
 
 set(SOURCES_TEST
   test.cpp
-  csvParserTest.cpp
+  csvTokenizerTest.cpp
 )
 
 set(HEADERS_TEST

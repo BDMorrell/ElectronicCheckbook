@@ -8,6 +8,8 @@
 using namespace echeck::parser;
 using namespace std;
 
+// helper objects
+
 class csvTokenizerFromString {
   public:
     csvTokenizer *izer;
@@ -26,13 +28,42 @@ class csvTokenizerFromString {
     }
 };
 
-string testCSVTokenizerFromString(string str)
+vector<string> testGetRow(string str)
+{
+  csvTokenizerFromString ctfs(str);
+  return ctfs.izer->getRow();
+}
+
+string testGetField(string str)
 {
   csvTokenizerFromString ctfs(str);
   return ctfs.izer->getField();
 }
 
-TEST(EscapedToken, NormalUsage) {
+// general tests
+
+TEST(csvTokenizer, Assumptions) {
+  ASSERT_EQ(0x0d, '\r');
+  ASSERT_EQ(0x0a, '\n');
+}
+
+TEST(csvTokenizer, advanceInput) {
+  istringstream iss("ab");
+  ASSERT_EQ(iss.peek(), 'a');
+  csvTokenizer ct(&iss);
+  ASSERT_EQ(iss.peek(), 'a');
+  ct.advanceInput();
+  ASSERT_EQ(iss.peek(), 'b');
+}
+
+// tests for csvTokenizer::getRow()
+
+TEST(csvTokenizer_getRow, TODO) {
+  FAIL();
+}
+
+// tests for csvTokenizer::getField()
+TEST(csvTokenizer_EscapedToken, NormalUsage) {
   string in_out_pairs[][2] = {
     // can it handle the basics?
     {"\"This is intended\"", "This is intended"},
@@ -50,11 +81,11 @@ TEST(EscapedToken, NormalUsage) {
     {"\"Hello\"\n\"How are you?\"", "Hello"}
   }; int i = sizeof(in_out_pairs) / sizeof(*in_out_pairs);
   for (i -= 1; i >= 0; i--) { // backwards iterator
-    EXPECT_EQ(testCSVTokenizerFromString(in_out_pairs[i][0]), in_out_pairs[i][1]);
+    EXPECT_EQ(testGetField(in_out_pairs[i][0]), in_out_pairs[i][1]);
   }
 }
 
-TEST(EscapedToken, UnfinishedField) {
+TEST(csvTokenizer_EscapedToken, UnfinishedField) {
   string shouldThrow[] = {
     "\"This doesn't fini",
     "\"\"\"Opens with escaped double quote",
@@ -62,25 +93,19 @@ TEST(EscapedToken, UnfinishedField) {
     "\"\"\"Surrounded by escaped quotes\"\"",
     "\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"" // has odd number of escaped quotes
   };
-  // I'm looking for either parser_error or token_error
   int i = sizeof(shouldThrow)/sizeof(*shouldThrow);
   for (i -= 1; i >= 0; i--) { // backwards iterator
-    EXPECT_THROW(testCSVTokenizerFromString(shouldThrow[i]), parser_error);
+    EXPECT_THROW(testGetField(shouldThrow[i]), token_error);
   }
   // Just make sure it doesn't just throw all the time
-  EXPECT_NO_THROW(testCSVTokenizerFromString("\"This does finish\""));
+  EXPECT_NO_THROW(testGetField("\"This does finish\""));
 }
 
-TEST(EscapedToken, IllegalCharacters) {
-  EXPECT_THROW(testCSVTokenizerFromString("\"Hello\rThat should break\""), token_error);
+TEST(csvTokenizer_EscapedToken, IllegalCharacters) {
+  EXPECT_THROW(testGetField("\"Hello\rThat should break\""), token_error);
 }
 
-TEST(EscapedToken, Assumptions) {
-  ASSERT_EQ(0x0d, '\r');
-  ASSERT_EQ(0x0a, '\n');
-}
-
-TEST(UnescapedToken, NormalUsage) {
+TEST(csvTokenizer_UnescapedToken, NormalUsage) {
   string in_out_pairs[][2] = {
     // can it handle the basics?
     {"This is intended", "This is intended"},
@@ -94,20 +119,12 @@ TEST(UnescapedToken, NormalUsage) {
   };
   int i = sizeof(in_out_pairs) / sizeof(*in_out_pairs);
   for (i -= 1; i >= 0; i--) { // backwards iterator
-    EXPECT_EQ(testCSVTokenizerFromString(in_out_pairs[i][0]), in_out_pairs[i][1]);
+    EXPECT_EQ(testGetField(in_out_pairs[i][0]), in_out_pairs[i][1]);
   }
 }
 
-TEST(UnescapedToken, IllegalCharacters) {
-  EXPECT_THROW(testCSVTokenizerFromString("Hello\rThat should break"), token_error);
-  EXPECT_THROW(testCSVTokenizerFromString("Hello\"That should break"), token_error);
+TEST(csvTokenizer_UnescapedToken, IllegalCharacters) {
+  EXPECT_THROW(testGetField("Hello\rThat should break"), token_error);
+  EXPECT_THROW(testGetField("Hello\"That should break"), token_error);
 }
 
-TEST(csvParser, advanceInput) {
-  istringstream iss("ab");
-  ASSERT_EQ(iss.peek(), 'a');
-  csvTokenizer ct(&iss);
-  ASSERT_EQ(iss.peek(), 'a');
-  ct.advanceInput();
-  ASSERT_EQ(iss.peek(), 'b');
-}
