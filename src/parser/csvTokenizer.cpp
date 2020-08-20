@@ -13,6 +13,22 @@ csvTokenizer::~csvTokenizer()
   ;
 }
 
+vector<string> csvTokenizer::getRow()
+{
+  // thought: support an expected initial size hint
+  vector<string> fields;
+  while (input->peek() == ',') {
+    fields.push_back(getField());
+  }
+  if (input->peek() == '\r') {
+    input->putback(handleCRLF());
+  }
+  if (input->peek() == '\n') {
+    advanceInput();
+  }
+  return fields;
+}
+
 string csvTokenizer::getField()
 {
   int c = input->peek();
