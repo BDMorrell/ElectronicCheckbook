@@ -6,6 +6,18 @@ The `master` branch should be the stable version, so it's not going to have anyt
 
 All experimental development should be in the `dev` branch. That said, please look at signed tags for stable builds.
 
+## Compiling
+To compile this project, you are going to need `cmake` and `git`.
+1. Make sure you have the `git submodule` dependencies.
+  - `git submodule init`
+  - `git submodule update`
+2. Build
+  - Make a directory for the build output
+  - In that directory, run `cmake [path to source]`  
+    It could be usefull to check out the [`cmake` manual page on how to generate a buildsystem](https://cmake.org/cmake/help/latest/manual/cmake.1.html#generate-a-project-buildsystem) for options
+  - Run `cmake --build .` in your build directory
+3. The program is written to `[build directory]/bin`
+
 ## File organization
 - `src` should have the base code for the model
 - `test` should have test code
