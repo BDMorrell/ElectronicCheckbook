@@ -38,12 +38,12 @@ All experimental development should be in the `dev` branch. That said, please lo
    Using node.js and next.js, I was able to make a user interface. I was planning for future server-client interactions, and mentally and marking which areas should and should not be served using next.js.
     - I did not have enough comments explaining my plans, and so some ideas for the future were forgotten.
     - When it came time to have the client and server communicate, I was planning on using GraphQL, but I was overwhelmed by trying to learn the API.
-    - I lost motivation by becomming overwhelmed.
+    - I lost motivation by becoming overwhelmed.
       - I was trying to do things I had no experience in, without an external aid.
       - The prospect of eventually making a server script was not helping.
       - Maybe this could have gone better if I did not rush wanting to see real results, and practice and learn using various tiny test programs.
 3. Using Gtkmm  
-   I was able to hode-code the layouts. The idea behind this, instead of Glade, was that if I used Glade, I would have a large amount of code just hooking the built UI to the code behind the view.
+   I was able to hard-code the layouts. The idea behind this, instead of Glade, was that if I used Glade, I would have a large amount of code just hooking the built UI to the code behind the view.
     - The code was getting messier and messier very quickly. Refactoring seemed like it would be overwhelming by the point I realized that the program can not continue unless it was refactored thoroughly.
       - I should refactor as I go.
     - I may reuse some of the better code from this.
