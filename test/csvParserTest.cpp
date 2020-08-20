@@ -48,8 +48,7 @@ TEST(EscapedToken, NormalUsage) {
     // A single token extraction?
     {"\"Hello\",\"How are you?\"", "Hello"},
     {"\"Hello\"\n\"How are you?\"", "Hello"}
-  };
-  int i = sizeof(in_out_pairs) / sizeof(*in_out_pairs);
+  }; int i = sizeof(in_out_pairs) / sizeof(*in_out_pairs);
   for (i -= 1; i >= 0; i--) { // backwards iterator
     EXPECT_EQ(testCSVTokenizerFromString(in_out_pairs[i][0]), in_out_pairs[i][1]);
   }
@@ -104,3 +103,11 @@ TEST(UnescapedToken, IllegalCharacters) {
   EXPECT_THROW(testCSVTokenizerFromString("Hello\"That should break"), token_error);
 }
 
+TEST(csvParser, advanceInput) {
+  istringstream iss("ab");
+  ASSERT_EQ(iss.peek(), 'a');
+  csvTokenizer ct(&iss);
+  ASSERT_EQ(iss.peek(), 'a');
+  ct.advanceInput();
+  ASSERT_EQ(iss.peek(), 'b');
+}
