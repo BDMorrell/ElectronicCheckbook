@@ -13,12 +13,15 @@ public:
   ~csvTokenizer();
 
   std::string getField(); // may throw
+  void advanceInput();
 protected:
   std::istream *input;
   std::string getEscapedField();
   std::string getUnescapedField();
   [[noreturn]] void unexpectedEOF();
+  char handleCRLF();
 };
 
 };
 };
+

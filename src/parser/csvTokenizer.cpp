@@ -25,6 +25,11 @@ string csvTokenizer::getField()
   }
 }
 
+void csvTokenizer::advanceInput()
+{
+  input->get();
+}
+
 string csvTokenizer::getEscapedField()
 {
   int c = input->get(); // remove first DQUOTE
@@ -32,18 +37,13 @@ string csvTokenizer::getEscapedField()
   while ((c = input->get()) != EOF) {
     if (c == '"') {
       if (input->peek() == '"') {
-        input->get(); // advance input
+        advanceInput();
         builder.push_back('"');
       } else {
         break; // end of field
       }
     } else if (c == '\x0d') { // CR
-      if (input->peek() == '\x0a') {
-        input->get(); // advance input
-        builder.push_back('\n');
-      } else {
-        throw token_error("CR may not exist without a LF");
-      }
+      builder.push_back(handleCRLF());
     } else { // note: \x0a (LF) can pass right through. I'm assuming \x0a == \n
       builder.push_back((char) c);
     }
@@ -59,7 +59,11 @@ string csvTokenizer::getUnescapedField()
   int c;
   string builder;
   while ((c = input->get()) != EOF) {
+    if (c == '\r') { // CR
+      c = handleCRLF();
+    }
     if (c == ',' || c == '\n') {
+      input->putback(c);
       break;
     } else if (c == '"') {
       throw token_error("a DQUOTE may not exist in a non-escaped");
@@ -75,3 +79,12 @@ void csvTokenizer::unexpectedEOF()
   throw parser_error("end of file");
 }
 
+char csvTokenizer::handleCRLF()
+{
+  if (input->peek() == '\n') {
+    advanceInput();
+    return '\n';
+  } else {
+    throw token_error("CR may not exist without a LF");
+  }
+}
