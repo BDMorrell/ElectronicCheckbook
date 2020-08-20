@@ -42,14 +42,14 @@ string csvTokenizer::getEscapedField()
       } else {
         break; // end of field
       }
-    } else if (c == '\x0d') { // CR
+    } else if (c == '\r') { // CR
       builder.push_back(handleCRLF());
-    } else { // note: \x0a (LF) can pass right through. I'm assuming \x0a == \n
+    } else { // note: \n (LF) can pass right through.
       builder.push_back((char) c);
     }
   }
   if (c == EOF) {
-    throw parser_error("unexpected EOF when parsing an escaped");
+    throw token_error("unexpected EOF when parsing an escaped");
   }
   return builder;
 }
@@ -76,7 +76,7 @@ string csvTokenizer::getUnescapedField()
 
 void csvTokenizer::unexpectedEOF()
 {
-  throw parser_error("end of file");
+  throw token_error("end of file");
 }
 
 char csvTokenizer::handleCRLF()
