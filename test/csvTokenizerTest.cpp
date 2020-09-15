@@ -1,7 +1,10 @@
 #include "gtest/gtest.h"
+#include <algorithm>
 #include <string>
 #include <sstream>
 #include <vector>
+#include <exception>
+#include <stdexcept>
 #include "parser/parseErrors.h"
 #include "parser/csvTokenizer.h"
 
@@ -58,11 +61,57 @@ TEST(csvTokenizer, advanceInput) {
 
 // tests for csvTokenizer::getRow()
 
-TEST(csvTokenizer_getRow, TODO) {
-  FAIL();
+TEST(csvTokenizer_getRow, Empty) {
+  string input = "";
+  ASSERT_THROW(testGetRow(input), token_error);
+}
+
+TEST(csvTokenizer_getRow, NormalUsage) {
+  string input = "148,\" Hello, there,\"\" said the old man\",it was a while before he returned.,,";
+  vector<string> expected = {"148", " Hello, there,\" said the old man", "it was a while before he returned.", "", ""};
+  vector<string> output = testGetRow(input);
+  if (expected.size() != output.size()) {
+    FAIL();
+  }
+  EXPECT_TRUE(std::equal(output.begin(), output.end(), expected.begin()));
+}
+
+TEST(csvTokenizer_getRow, BlankFields) {
+  string input = ",,";
+  vector<string> expected = {"", "", ""};
+  vector<string> output = testGetRow(input);
+  if (expected.size() != output.size()) {
+    FAIL();
+  }
+  EXPECT_TRUE(std::equal(output.begin(), output.end(), expected.begin()));
+}
+
+TEST(csvTokenizer_getRow, BlankFields2) {
+  string input = ",,\n,,";
+  vector<string> expected = {"", "", ""};
+  vector<string> output = testGetRow(input);
+  if (expected.size() != output.size()) {
+    FAIL();
+  }
+  EXPECT_TRUE(std::equal(output.begin(), output.end(), expected.begin()));
+}
+
+TEST(csvTokenizer_getRow, MultipleRows) {
+  string input = "148,149,150,151\n1,2,3,4\n5,6,7,8";
+  vector<string> expected = {"148", "149", "150", "151"};
+  vector<string> output = testGetRow(input);
+  if (expected.size() != output.size()) {
+    cout << expected.size() << "!=" << output.size() << endl;
+    FAIL();
+  }
+  EXPECT_TRUE(std::equal(output.begin(), output.end(), expected.begin()));
 }
 
 // tests for csvTokenizer::getField()
+TEST(csvTokenizer_getField, EmptyInput) {
+  EXPECT_EQ(testGetField(""),"");
+}
+
 TEST(csvTokenizer_EscapedToken, NormalUsage) {
   string in_out_pairs[][2] = {
     // can it handle the basics?

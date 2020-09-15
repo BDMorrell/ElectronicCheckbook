@@ -17,8 +17,16 @@ vector<string> csvTokenizer::getRow()
 {
   // thought: support an expected initial size hint
   vector<string> fields;
-  while (input->peek() == ',') {
+  if (input->peek() == EOF) {
+    unexpectedEOF();
+  }
+  while(input->good()) {
     fields.push_back(getField());
+    if (input->peek() == ',') {
+      advanceInput();
+    } else {
+      break;
+    }
   }
   if (input->peek() == '\r') {
     input->putback(handleCRLF());
@@ -32,9 +40,8 @@ vector<string> csvTokenizer::getRow()
 string csvTokenizer::getField()
 {
   int c = input->peek();
-  if (c == EOF) {
-    unexpectedEOF();
-  } else if (c == '"') {
+  // EOF should return ""
+  if (c == '"') {
     return getEscapedField();
   } else {
     return getUnescapedField();
