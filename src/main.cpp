@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <vector>
 #include "version.h"
 #include "parser/csvTokenizer.h"
 #include "parser/parseErrors.h"
@@ -13,17 +14,10 @@ int main(int arc, char **argv)
   int count = 0;
   while (cin.good()) {
     try {
-      string token;
-      token = ct.getField();
-      cout << count++ << ": " << token << endl;
-      int c = cin.peek();
-      if (c == '\n') {
-        cout << "NL" << endl;
-      } else {
-        cout << "Peek " << c << ": " << (char) c << endl;
-      }
-      if (c == '\n' || c == ',') {
-        ct.advanceInput();
+      vector<string> row = ct.getRow();
+      int i;
+      for (i = 0; i < row.size(); i++) {
+        cout << count << "," << i << ": " << row[i] << endl;
       }
     } catch (parser_error e) {
       cerr << "ERROR: " << e.what() << endl;
